@@ -34,14 +34,20 @@ elif [ "$XDG_CURRENT_DESKTOP" == "MATE" ]; then
 elif [ "$desktop" == "Cinnamon" ] || [ "$XDG_CURRENT_DESKTOP" == "X-Cinnamon" ]; then
         gsettings get org.cinnamon.desktop.background picture-uri
 
-# KDE Plasma 5
-elif [ "$XDG_CURRENT_DESKTOP" == "KDE" ] && [ "$KDE_SESSION_VERSION" == "5" ]; then
+# KDE Plasma 5 and 6 (same appletsrc layout; Kiro Plasma is Wayland Plasma 6)
+elif [ "$XDG_CURRENT_DESKTOP" == "KDE" ] && [ "${KDE_SESSION_VERSION:-0}" -ge 5 ]; then
         grep 'Image=' ~/.config/plasma-org.kde.plasma.desktop-appletsrc | sed 's/Image=//'
 
 # Trinity
 elif [ "$XDG_CURRENT_DESKTOP" == "Trinity" ]; then
         # The "1" refers to the virtual desktop number
         dcop kdesktop KBackgroundIface currentWallpaper 1 2> /dev/null
+
+# Wayland compositors that set_wallpaper drives via swaybg (Hyprland, Sway, niri, wayfire):
+# read the current image back from the running swaybg's "-i <path>" argument.
+elif pidof swaybg >/dev/null 2>&1; then
+        swaybg_pid=$(pidof swaybg | tr ' ' '\n' | head -1)
+        tr '\0' '\n' < "/proc/$swaybg_pid/cmdline" | grep -A1 '^-i$' | tail -1
 
 # All above fails => fallback to the Gnome 3 way
 else
