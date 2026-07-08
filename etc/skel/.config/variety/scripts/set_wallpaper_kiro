@@ -49,6 +49,7 @@
 # Herbstluftwm
 # Hypr
 # Hyprland
+# Hyprland - noctura
 # I3
 # I3-with-shmlog
 # Icewm
@@ -292,11 +293,16 @@ if [ "$XDG_CURRENT_DESKTOP" == "LXQt" ]; then
     pcmanfm-qt --set-wallpaper "$WP" 2> /dev/null
 fi
 
-# ─── WAYLAND — Sway / Hyprland ─────────────────────────────────────────────────
-# Uses swaybg when available (prevents system freeze); kills old instance after
-# launching new one to avoid grey-background flicker.
+# ─── WAYLAND — Sway / Hyprland / noctalia-shell ───────────────────────────────
+# Prefer noctalia-shell (qs) when a live instance answers IPC, so its own
+# transitions and per-monitor handling stay in sync. Otherwise fall back to
+# swaybg (prevents system freeze), and finally swaymsg. swaybg kills its old
+# instance after launching a new one to avoid grey-background flicker.
 PID=`pidof swaybg`
-if [[ -n $PID || $XDG_CURRENT_DESKTOP == "Hyprland" ]]; then
+if command -v "qs" >/dev/null 2>&1 && qs -c noctalia-shell ipc show >/dev/null 2>&1; then
+    # noctalia-shell is running — hand it the wallpaper. Empty screen arg = all monitors.
+    qs -c noctalia-shell ipc call wallpaper set "$WP" "" 2> /dev/null
+elif [[ -n $PID || $XDG_CURRENT_DESKTOP == "Hyprland" ]]; then
     # If swaybg is available, use it as prevents system freeze.
     # See https://github.com/swaywm/sway/issues/5606
     if command -v "swaybg" >/dev/null 2>&1; then
