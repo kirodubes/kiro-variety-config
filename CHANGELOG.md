@@ -1,5 +1,41 @@
 # Changelog
 
+## 2026.09.17
+
+### What Changed
+Fixed `get_wallpaper_kiro` failing on every Variety startup. The script ended with an
+unconditional feh tail (`sed "s/\ /\n/g" ~/.fehbg | grep \'`) that upstream ships
+**commented out**; our fork had it live. Two consequences:
+
+- On any session without feh (XFCE, Plasma, GNOME — most Kiro editions) `~/.fehbg`
+  does not exist, `sed` exits 1, and because it was the last command it became the
+  script's exit status. Variety calls this via `subprocess.check_output()`, so every
+  startup raised `CalledProcessError` into `variety.log` and History→Back could not
+  restore the pre-Variety wallpaper.
+- On a feh-driven tiling WM the `elif` chain matched nothing, fell through to the
+  gsettings `else`, printed a GNOME URI, and *then* appended feh's answer — two lines
+  where Variety expects a single path.
+
+feh is now a proper `elif` branch in the chain (same shape as the existing swaybg
+branch), and the script ends with an explicit `exit 0`.
+
+Found by a `/kiro-syscheck` run against a fresh v26.09.17 install in the VM.
+
+### Technical Details
+The branch tests `[ -f "$HOME/.fehbg" ]` and parses the quoted path out of feh's saved
+restore command with `tr ' ' '\n' | grep \'` — `tr` rather than the old `sed` because
+the intent was always a space-to-newline split, not a regex. Placed immediately before
+the `else` fallback so every DE-specific branch still wins; a feh box that also has a
+DE session keeps its DE answer. The trailing `exit 0` is the load-bearing part: the
+script's exit status is otherwise whatever the last branch's command returned, and
+several of them (a missing appletsrc, an absent gsettings key) can legitimately fail
+while stdout is still useful. Verified all three paths return one line and exit 0:
+feh present, feh absent with no DE, and this dev box (chadwm + feh).
+
+### Files Modified
+- etc/skel/.config/variety/scripts/get_wallpaper_kiro
+- CHANGELOG.md
+
 ## 2026.06.28
 
 ### What Changed
