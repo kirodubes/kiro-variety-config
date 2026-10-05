@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026.10.05
+
+### What Changed
+- Variety now changes the wallpaper on the DankMaterialShell editions (kiro-hyprland-dms, kiro-niri-dms). DMS draws
+  its own full-screen wallpaper layer, and `set_wallpaper_kiro` had no DMS case: on Hyprland it fell back to swaybg
+  (not installed, then `swaymsg`, which does nothing there), so Variety kept downloading wallpapers that never
+  appeared. Found on a bare-metal kiro-hyprland-dms install.
+
+### Technical Details
+- The Wayland section now hands the wallpaper to DMS with `dms ipc call wallpaper set "$WP"` when DMS is running,
+  right after the noctalia-shell case.
+- DMS is detected with `pgrep -u "$(id -u)" -x dms`, not with `dms ipc`. With no DMS running, `dms ipc` unpacks
+  DMS's whole embedded UI, and running that next to a starting `dms run` is what made the DMS bar go missing at
+  first login (fixed the same day in kiro-hyprland-dms / kiro-niri-dms).
+- The niri section skips swaybg when DMS is running, so kiro-niri-dms doesn't start a hidden swaybg under DMS.
+- Tested on the bare-metal box: the script set a Variety image through DMS and started no swaybg.
+
+### Files Modified
+- `etc/skel/.config/variety/scripts/set_wallpaper_kiro`
+
 ## 2026.09.17
 
 ### What Changed
