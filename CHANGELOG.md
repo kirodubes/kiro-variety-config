@@ -8,6 +8,11 @@
   (not installed, then `swaymsg`, which does nothing there), so Variety kept downloading wallpapers that never
   appeared. Found on a bare-metal kiro-hyprland-dms install.
 
+- Variety's wallpaper change no longer times out on non-XFCE desktops that also have XFCE installed. The XFCE part
+  of `set_wallpaper_kiro` ran on every desktop whenever `xfconf-query` existed. On the bare-metal test box,
+  xfce4-desktop held 412 backdrop keys, so the loop made ~1,200 `xfconf-query` calls and took ~11s. Variety kills
+  the script after 10s (`Timeout while running set_wallpaper script, killed`), so the wallpaper never changed.
+
 ### Technical Details
 - The Wayland section now hands the wallpaper to DMS with `dms ipc call wallpaper set "$WP"` when DMS is running,
   right after the noctalia-shell case.
@@ -16,6 +21,9 @@
   first login (fixed the same day in kiro-hyprland-dms / kiro-niri-dms).
 - The niri section skips swaybg when DMS is running, so kiro-niri-dms doesn't start a hidden swaybg under DMS.
 - Tested on the bare-metal box: the script set a Variety image through DMS and started no swaybg.
+
+- The XFCE section now runs only when `XDG_CURRENT_DESKTOP` contains `xfce`, matching Variety's stock script. On the
+  test box the run went from 11.2s to 0.09s, and `variety --next` set the wallpaper through DMS without a timeout.
 
 ### Files Modified
 - `etc/skel/.config/variety/scripts/set_wallpaper_kiro`

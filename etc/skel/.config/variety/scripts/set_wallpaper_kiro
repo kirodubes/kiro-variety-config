@@ -273,9 +273,10 @@ if [ "$(gsettings list-schemas | grep -c com.deepin.wrap.gnome.desktop.backgroun
 fi
 
 # ─── XFCE ──────────────────────────────────────────────────────────────────────
-command -v xfconf-query >/dev/null 2>&1
-rc=$?
-if [[ $rc = 0 ]] ; then
+# XFCE sessions only (as upstream): with XFCE merely installed, xfce4-desktop can hold
+# hundreds of backdrop keys, and looping over them pushed other desktops past Variety's
+# 10s script timeout, so the wallpaper never changed.
+if [[ ${XDG_CURRENT_DESKTOP,,} == *xfce* ]] && command -v xfconf-query >/dev/null 2>&1; then
     for i in $(xfconf-query -c xfce4-desktop -p /backdrop -l | grep -E -e "screen.*/monitor.*image-path$" -e "screen.*/monitor.*/last-image$"); do
         xfconf-query -c xfce4-desktop -p "$i" -n -t string -s "" 2> /dev/null
         xfconf-query -c xfce4-desktop -p "$i" -s "" 2> /dev/null
