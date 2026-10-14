@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026.10.14
+
+### What Changed
+- Hand wallpapers to noctalia v5. noctalia-shell v4 (Quickshell) broke on Qt 6.12: noctalia-qs was built against Qt 6.11, so every themed widget got an undefined colour and the bar rendered as empty pills. v4 is unmaintained upstream and [cachyos] now ships v5 under the noctalia-shell name without shell.qml. Native noctalia v5.2.1 from Arch [extra] was live-tested on a real-metal test box and works.
+
+### Technical Details
+- `set_wallpaper_kiro` detects noctalia with `pgrep -x noctalia` and sets the wallpaper with `noctalia msg wallpaper-set` (all outputs) instead of v4's `qs -c noctalia-shell ipc call wallpaper set`.
+
+### Files Modified
+- etc/skel/.config/variety/scripts/set_wallpaper_kiro
+
 ## 2026.10.05
 
 ### What Changed

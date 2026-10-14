@@ -294,8 +294,8 @@ if [ "$XDG_CURRENT_DESKTOP" == "LXQt" ]; then
     pcmanfm-qt --set-wallpaper "$WP" 2> /dev/null
 fi
 
-# ─── WAYLAND — Sway / Hyprland / noctalia-shell / DankMaterialShell ───────────
-# Prefer a desktop shell (noctalia-shell, DMS) when one is running: both draw their
+# ─── WAYLAND — Sway / Hyprland / noctalia / DankMaterialShell ─────────────────
+# Prefer a desktop shell (noctalia, DMS) when one is running: both draw their
 # own full-screen wallpaper layer that would cover swaybg. Otherwise fall back to
 # swaybg (prevents system freeze), and finally swaymsg. swaybg kills its old
 # instance after launching a new one to avoid grey-background flicker.
@@ -303,9 +303,9 @@ PID=`pidof swaybg`
 # Checked with pgrep, not `dms ipc`: with no DMS running, `dms ipc` unpacks DMS's whole UI.
 DMS_RUNNING=false
 pgrep -u "$(id -u)" -x dms >/dev/null 2>&1 && DMS_RUNNING=true
-if command -v "qs" >/dev/null 2>&1 && qs -c noctalia-shell ipc show >/dev/null 2>&1; then
-    # noctalia-shell is running — hand it the wallpaper. Empty screen arg = all monitors.
-    qs -c noctalia-shell ipc call wallpaper set "$WP" "" 2> /dev/null
+if pgrep -u "$(id -u)" -x noctalia >/dev/null 2>&1; then
+    # noctalia (v5) is running — hand it the wallpaper. No connector arg = all monitors.
+    noctalia msg wallpaper-set "$WP" 2> /dev/null
 elif $DMS_RUNNING; then
     dms ipc call wallpaper set "$WP" >/dev/null 2>&1
 elif [[ -n $PID || $XDG_CURRENT_DESKTOP == "Hyprland" ]]; then
