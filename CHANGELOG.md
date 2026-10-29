@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026.10.29
+
+### What Changed
+- Variety changes the wallpaper on XFCE again. `set_wallpaper_kiro` took about 14 seconds there, past variety's 10-second script timeout, so every change was killed (`Timeout while running set_wallpaper script, killed`). It now takes about 1 second (tested in a Kiro XFCE VM).
+
+### Technical Details
+- The Kiro XFCE skel `xfce4-desktop.xml` pre-seeds about 66 connector names (412 backdrop image keys), and the XFCE loop ran three `xfconf-query` calls per key. It now keeps only the keys for the monitors in `xrandr --listactivemonitors`, and falls back to every key when xrandr gives nothing or no key matches.
+
+### Files Modified
+- etc/skel/.config/variety/scripts/set_wallpaper_kiro
+
 ## 2026.10.14
 
 ### What Changed
