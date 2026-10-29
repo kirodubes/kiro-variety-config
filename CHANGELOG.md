@@ -4,9 +4,11 @@
 
 ### What Changed
 - Variety changes the wallpaper on XFCE again. `set_wallpaper_kiro` took about 14 seconds there, past variety's 10-second script timeout, so every change was killed (`Timeout while running set_wallpaper script, killed`). It now takes about 1 second (tested in a Kiro XFCE VM).
+- Wayfire: changing the wallpaper with Variety now recolours the desktop (pywal via kiro-wayfire's `set-theme.sh`), and the pick survives a re-login. Before, only the picture changed, and the next login showed the default `kiro.jpg` again. Reported by a user, reproduced on a test box.
 
 ### Technical Details
 - The Kiro XFCE skel `xfce4-desktop.xml` pre-seeds about 66 connector names (412 backdrop image keys), and the XFCE loop ran three `xfconf-query` calls per key. It now keeps only the keys for the monitors in `xrandr --listactivemonitors`, and falls back to every key when xrandr gives nothing or no key matches.
+- The Wayfire branch never ran: it tested for `wayfire`, but the session sets `XDG_CURRENT_DESKTOP=Wayfire:wlroots`. It now matches `*wayfire*` case-insensitively. It no longer swaps swaybg a second time (the Sway/Hyprland branch above already did); it only starts one when none is running, then runs `set-theme.sh "$WP"` in the background. pywal stores the picture in `~/.cache/wal/wal`, and kiro-wayfire's login reads it from there.
 
 ### Files Modified
 - etc/skel/.config/variety/scripts/set_wallpaper_kiro

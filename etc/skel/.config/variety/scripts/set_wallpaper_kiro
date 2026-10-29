@@ -348,16 +348,15 @@ if [[ $XDG_CURRENT_DESKTOP == "niri" ]] && ! $DMS_RUNNING; then
 fi
 
 # ─── WAYLAND — wayfire ─────────────────────────────────────────────────────────
-if [ "$XDG_CURRENT_DESKTOP" == "wayfire" ]; then
-    if command -v "swaybg" >/dev/null 2>&1; then
-        PID=`pidof swaybg`
+# The session says "Wayfire:wlroots". A running swaybg was already swapped above; this starts one when none runs,
+# then recolours the desktop with pywal (kiro-wayfire's set-theme.sh). pywal records the picture in
+# ~/.cache/wal/wal, and the next login starts from it, so the pick survives a re-login.
+if [[ ${XDG_CURRENT_DESKTOP,,} == *wayfire* ]]; then
+    if ! pidof swaybg >/dev/null && command -v "swaybg" >/dev/null 2>&1; then
         swaybg -i "$WP" -m fill &
-        if [ ! -z "$PID" ]; then
-            sleep 1
-            kill $PID 2>/dev/null
-        fi
-    else
-        swaymsg output "*" bg "$WP" fill 2> /dev/null
+    fi
+    if [ -f "$HOME/.config/wayfire/scripts/set-theme.sh" ]; then
+        bash "$HOME/.config/wayfire/scripts/set-theme.sh" "$WP" >/dev/null 2>&1 &
     fi
 fi
 
