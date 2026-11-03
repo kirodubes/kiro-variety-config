@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026.11.03
+
+### What Changed
+- Kiro Hyprland Impasto: Variety hands each wallpaper to the impasto shell, so the bar, widgets and terminal repaint
+  from it like from impasto's own picker.
+
+### Technical Details
+- New first branch in the Wayland block of `set_wallpaper_kiro`: when `DESKTOP_SESSION` ends in
+  `kiro-hyprland-impasto` and the `impasto` command exists, `impasto wallpaper set "$WP"` (impasto sets it through
+  awww). Detected by session, not by `pgrep qs`, because the DMS editions run `qs` too.
+
+### Files Modified
+- etc/skel/.config/variety/scripts/set_wallpaper_kiro
+
 ## 2026.10.29
 
 ### What Changed
