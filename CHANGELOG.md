@@ -3,6 +3,12 @@
 ## 2026.11.05
 
 ### What Changed
+- XFCE: a wallpaper set through Variety no longer goes back to the Kiro default after a reboot or new login.
+  `get_wallpaper_kiro` read a fixed key (`monitor0/workspace0/last-image`) that the shipped `xfce4-desktop.xml`
+  pre-seeds with the default, while `set_wallpaper_kiro` only updates the connected monitors' keys; at start Variety
+  asked for the current wallpaper, got the default and set it again. It now reads the first active monitor's key
+  (`xrandr --listactivemonitors`), falling back to the old key. Tested on a fresh Kiro XFCE install on a test box with
+  two monitors: log out and in, the wallpaper stays (XFCE shows its default for a moment until Variety starts).
 - Tiling WMs (feh): Variety's previous no longer stalls after a wallpaper with spaces in its path was set outside
   Variety (e.g. Thunar's feh actions). `get_wallpaper_kiro` returned that path split in two, Variety stored the
   halves in its history, and previous landed on a file that does not exist.
