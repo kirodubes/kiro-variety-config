@@ -50,9 +50,10 @@ elif pidof swaybg >/dev/null 2>&1; then
         tr '\0' '\n' < "/proc/$swaybg_pid/cmdline" | grep -A1 '^-i$' | tail -1
 
 # Tiling WMs that set their wallpaper with feh (chadwm, dwm, qtile, i3, bspwm):
-# feh writes the restore command to ~/.fehbg, quoted path last.
+# feh writes the restore command to ~/.fehbg, quoted path last. Take what is between the quotes:
+# splitting on spaces broke paths with spaces and put half a path in Variety's history.
 elif [ -f "$HOME/.fehbg" ]; then
-        tr ' ' '\n' < "$HOME/.fehbg" | grep \'
+        sed -n "s/.*'\(.*\)'.*/\1/p" "$HOME/.fehbg" | tail -1
 
 # All above fails => fallback to the Gnome 3 way
 else

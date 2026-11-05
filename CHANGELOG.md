@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026.11.05
+
+### What Changed
+- Tiling WMs (feh): Variety's previous no longer stalls after a wallpaper with spaces in its path was set outside
+  Variety (e.g. Thunar's feh actions). `get_wallpaper_kiro` returned that path split in two, Variety stored the
+  halves in its history, and previous landed on a file that does not exist.
+
+### Technical Details
+- The `~/.fehbg` branch used `tr ' ' '\n' | grep \'`, which cut `'/home/u/test wall paper.jpg'` at every space.
+  It now takes the text between the quotes: `sed -n "s/.*'\(.*\)'.*/\1/p" ~/.fehbg | tail -1`. Variety strips
+  quotes itself, so the path is printed unquoted.
+- Tested in the Kiro VM (ohmychadwm): cold start after `feh` with a spaced path, history clean, previous works.
+- Existing users keep the old script in `~/.config/variety/scripts/` until kiro-skell or a manual copy.
+
+### Files Modified
+- `etc/skel/.config/variety/scripts/get_wallpaper_kiro`
+
 ## 2026.11.03
 
 ### What Changed
