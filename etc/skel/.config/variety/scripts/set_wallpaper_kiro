@@ -302,7 +302,7 @@ if [ "$XDG_CURRENT_DESKTOP" == "LXQt" ]; then
     pcmanfm-qt --set-wallpaper "$WP" 2> /dev/null
 fi
 
-# ─── WAYLAND — Sway / Hyprland / impasto / noctalia / DankMaterialShell ───────
+# ─── WAYLAND — Sway / Hyprland / impasto / Caelestia / noctalia / DankMaterialShell
 # Prefer a desktop shell (noctalia, DMS) when one is running: both draw their
 # own full-screen wallpaper layer that would cover swaybg. Otherwise fall back to
 # swaybg (prevents system freeze), and finally swaymsg. swaybg kills its old
@@ -315,6 +315,10 @@ if [[ ${DESKTOP_SESSION:-} == *kiro-hyprland-impasto ]] && command -v impasto >/
     # Kiro Hyprland Impasto: hand it to the impasto shell, which sets it through awww and
     # repaints its palette from it. Checked by session, not `pgrep qs`: DMS runs qs too.
     impasto wallpaper set "$WP" >/dev/null 2>&1
+elif [[ ${DESKTOP_SESSION:-} == *kiro-hyprland-caelestia ]] && command -v caelestia >/dev/null 2>&1; then
+    # Kiro Hyprland Caelestia: the caelestia CLI sets it and recolours the scheme from it.
+    # -N keeps the user's light/dark mode. By session, not `pgrep qs` (DMS and impasto run qs too).
+    caelestia wallpaper -N -f "$WP" >/dev/null 2>&1
 elif pgrep -u "$(id -u)" -x noctalia >/dev/null 2>&1; then
     # noctalia (v5) is running — hand it the wallpaper. No connector arg = all monitors.
     noctalia msg wallpaper-set "$WP" 2> /dev/null

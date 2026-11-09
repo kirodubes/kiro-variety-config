@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026.11.09
+
+### What Changed
+- Variety works in the new Kiro Hyprland Caelestia session: each wallpaper goes to the Caelestia shell, which also
+  recolours its scheme from it.
+
+### Technical Details
+- `set_wallpaper_kiro`: a `*kiro-hyprland-caelestia` session branch runs `caelestia wallpaper -N -f "$WP"`, checked by
+  session name like impasto's (DMS and impasto run `qs` too). `-N` keeps the user's light/dark mode.
+- Reaches new homes through `/etc/skel` only, which is all this new edition needs.
+
+### Files Modified
+- `etc/skel/.config/variety/scripts/set_wallpaper_kiro`, `CHANGELOG.md`
+
 ## 2026.11.05
 
 ### What Changed
