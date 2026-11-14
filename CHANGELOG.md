@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026.11.14
+
+### What Changed
+- Variety now also rotates the Kiro Atelier wallpapers (package `kiro-atelier-wallpapers`), next to the Wallhaven
+  sources, so new users see what Kiro Atelier can do.
+
+### Technical Details
+- `variety.conf`: new source `src15 = True|folder|/usr/share/backgrounds/kiro-atelier`. A new key, so existing keys
+  keep their meaning. Reaches new homes through `/etc/skel` only.
+
+### Files Modified
+- `etc/skel/.config/variety/variety.conf`, `CHANGELOG.md`
+
 ## 2026.11.09
 
 ### What Changed
